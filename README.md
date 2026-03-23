@@ -25,6 +25,7 @@
 nca2-tools/
 ├── index.html            # 首頁導覽入口
 ├── .nojekyll             # 禁用 GitHub Pages 的 Jekyll 編譯
+├── README.md             # 本專案總覽說明
 │
 ├── nca2-craft-tool/      # 裝備製作成本計算器
 │   ├── index.html        # [自動產物] 單頁式應用 (由 build_all.py 生成)
@@ -32,15 +33,13 @@ nca2-tools/
 │   ├── js/items.js       # 道具辭典 (圖片、品階對應)
 │   ├── js/recipes.js     # 配方資料庫 (材料需求)
 │   ├── images/           # 道具圖片 (全英文檔名)
+│   ├── app_series_cart.js # 購物車邏輯原始碼
+│   ├── build_all.py      # Python 編譯腳本
 │   └── README.md         # 該工具的詳細說明
 │
-├── nca2-coin-tool/       # 幣值換算最佳化工具
-│   ├── index.html        # 單頁式幣值計算器
-│   └── README.md         # 該工具的詳細說明
-│
-├── build_all.py          # 裝備計算器的 Python 編譯腳本
-├── app_series_cart.js    # 裝備計算器的購物車邏輯原始碼
-└── rename.py             # 圖片中英文檔名轉換工具
+└── nca2-coin-tool/       # 幣值換算最佳化工具
+    ├── index.html        # 單頁式幣值計算器
+    └── README.md         # 該工具的詳細說明
 ```
 
 ---

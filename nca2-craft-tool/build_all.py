@@ -1,7 +1,8 @@
 import os
 import re
 
-base_dir = r"c:\Users\EnosLo\Desktop\Antigravity\NC-AION2-Tools\git\nca2-craft-tool"
+# 自動偵測腳本所在目錄作為基底路徑
+base_dir = os.path.dirname(os.path.abspath(__file__))
 
 def read_file(path):
     try:
@@ -19,7 +20,7 @@ def write_file(path, content):
 css_path = os.path.join(base_dir, "css", "style.css")
 items_path = os.path.join(base_dir, "js", "items.js")
 recipes_path = os.path.join(base_dir, "js", "recipes.js")
-app_path = os.path.join(base_dir, "..", "app_series_cart.js")
+app_path = os.path.join(base_dir, "app_series_cart.js")
 
 css = read_file(css_path)
 items = read_file(items_path)
@@ -74,8 +75,8 @@ for old_path in image_paths:
     new_path = "/".join(old_path.split('/')[:-1]) + "/" + new_filename
     
     # Check if we need to rename on disk
-    abs_old = os.path.normpath(os.path.join(base_dir, "..", old_path.replace('/', os.sep)))
-    abs_new = os.path.normpath(os.path.join(base_dir, "..", new_path.replace('/', os.sep)))
+    abs_old = os.path.normpath(os.path.join(base_dir, old_path.replace('/', os.sep)))
+    abs_new = os.path.normpath(os.path.join(base_dir, new_path.replace('/', os.sep)))
     if os.path.exists(abs_old) and abs_old != abs_new:
         try: os.rename(abs_old, abs_new)
         except: pass

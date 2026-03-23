@@ -15,14 +15,15 @@
 ```text
 nca2-craft-tool/
 ├── css/
-│   └── style.css       # 原始 CSS 樣式檔 (請編輯此檔)
+│   └── style.css            # 原始 CSS 樣式檔 (請編輯此檔)
 ├── js/
-│   ├── items.js        # 原始物品辭典 (圖片對應、品階、武器類型)
-│   └── recipes.js      # 原始配方資料庫 (材料需求設定)
-├── images/             # 所有道具、材料的圖片 (全英文檔名)
-├── app_series_cart.js  # 購物車邏輯、系列轉換與 UI 渲染程式碼 (位在 git 根目錄或上層)
-├── build_all.py        # 專案編譯與轉換工具 (位在 git 根目錄)
-└── index.html          # 【請勿手動編輯】由 build_all.py 自動生成的最終產物
+│   ├── items.js             # 原始物品辭典 (圖片對應、品階、武器類型)
+│   └── recipes.js           # 原始配方資料庫 (材料需求設定)
+├── images/                  # 所有道具、材料的圖片 (全英文檔名)
+├── app_series_cart.js       # 購物車邏輯、系列轉換與 UI 渲染程式碼
+├── build_all.py             # 專案編譯與轉換工具
+├── README.md                # 本說明文件
+└── index.html               # 【請勿手動編輯】由 build_all.py 自動生成的最終產物
 ```
 
 ---
@@ -35,7 +36,7 @@ nca2-craft-tool/
 ### 新增配方或修改資料 (正常流程)：
 1. 改數值或掛載圖片：請編輯 `js/items.js` (定義道具有甚麼圖、屬性) 以及 `js/recipes.js` (定義要吃甚麼材料)。
    - 若要新增圖片，請將圖片放入 `images/` 中，如果檔名是中文也無妨。
-2. 開啟終端機 (Terminal / PowerShell)，進入專案根目錄 (`git/` 底下)。
+2. 開啟終端機 (Terminal / PowerShell)，進入 `nca2-craft-tool/` 目錄。
 3. 執行編譯指令：
    ```bash
    python build_all.py
