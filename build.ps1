@@ -1,7 +1,7 @@
 $css = Get-Content 'nca2-craft-tool\css\style.css' -Raw
-$items = (Get-Content 'nca2-craft-tool\js\items.js' -Raw) -replace '"images/', '"nca2-craft-tool/images/'
+$items = Get-Content 'nca2-craft-tool\js\items.js' -Raw
 $recipes = Get-Content 'nca2-craft-tool\js\recipes.js' -Raw
-$app = Get-Content 'app_cart.js' -Raw
+$app = Get-Content 'app_series_cart.js' -Raw
 
 $html = @"
 <!DOCTYPE html>
@@ -9,8 +9,8 @@ $html = @"
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AION2 裝備製作成本計算器 | 購物車模式</title>
-  <meta name="description" content="AION2 永恆紀元2 裝備製作成本計算器 — 支援多件裝備材料合併計算">
+  <title>AION2 裝備製作計算器 | 系列套裝合併模式</title>
+  <meta name="description" content="AION2 永恆紀元2 裝備製作成本計算器 — 依照裝備系列分組，支援多件裝備材料合併計算">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚔️</text></svg>">
   <style>
 $css
@@ -26,18 +26,17 @@ $css
   </style>
 </head>
 <body>
-  <!-- Header -->
   <header class="header">
     <div class="header-inner">
       <div class="logo">
         <div class="logo-icon">A2</div>
         <div>
           <div class="logo-text">AION2 CRAFT</div>
-          <div class="logo-subtitle">裝備製作成本計算器 (綜合單頁版)</div>
+          <div class="logo-subtitle">裝備製作成本計算器 (系列配置整合版)</div>
         </div>
       </div>
       <div class="header-info">
-        <span>💡 目前已支援多把裝備合併計算，解決了 404 問題，單機與 GitHub Pages 皆順暢執行</span>
+        <span>💡 依照系列選擇武器，並一次試算多件合併材料花費</span>
       </div>
     </div>
   </header>
@@ -47,19 +46,24 @@ $css
       <aside class="sidebar">
         <div class="panel">
           <div class="panel-header">
-            <span class="icon">⚔️</span>
-            <h2>裝備選單 (點選加入)</h2>
+            <span class="icon">✨</span>
+            <h2>裝備系列選單 (點擊開始配置)</h2>
           </div>
-          <div class="filter-tabs" id="filter-tabs"></div>
+          <!-- 隱藏無用的分類，改為純粹展現系列 -->
           <div class="equipment-list" id="equipment-list"></div>
         </div>
       </aside>
 
       <section class="main-content">
+        <!-- 系列配置面板 -->
+        <div class="panel" style="padding: 24px; margin-bottom: 24px;" id="series-detail-panel">
+          <div class="empty-state"><p>請從左側挑選裝備系列</p></div>
+        </div>
+
         <!-- 購物車清單 -->
         <div class="panel" style="padding: 24px; position: relative; margin-bottom: 24px;">
           <div class="cart-section">
-            <h3>🛒 您選擇的製作清單</h3>
+            <h3>🛒 您規劃製作的購物車清單</h3>
             <div id="cart-container"></div>
           </div>
         </div>
@@ -67,7 +71,7 @@ $css
         <!-- 合併材料清單 -->
         <div class="panel" style="padding: 24px;">
           <div class="equip-materials">
-            <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--text-secondary);">📋 需求材料總覽 (已合併)</h3>
+            <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--text-secondary);">📋 需求材料總覽 (所有項目已合併加總)</h3>
             <div class="materials-grid" id="materials-grid"></div>
           </div>
         </div>
@@ -75,8 +79,8 @@ $css
         <!-- 總成本 -->
         <div class="cost-summary" style="margin-top: 24px;">
           <div class="cost-label">
-            <h3>💰 合併總成本</h3>
-            <p id="total-info">請先加入裝備到清單</p>
+            <h3>💰 總合併成本試算</h3>
+            <p id="total-info">請先安排您的裝備製作清單</p>
           </div>
           <div class="cost-total">
             <span class="cost-amount" id="total-amount">0</span>
@@ -92,14 +96,16 @@ $css
   </main>
 
   <script>
+// ---------- 資料載入區 ----------
 $items
 
 $recipes
 
+// ---------- 邏輯執行區 ----------
 $app
   </script>
 </body>
 </html>
 "@
 
-Set-Content -Path 'index.html' -Value $html -Encoding UTF8
+Set-Content -Path 'nca2-craft-tool\index.html' -Value $html -Encoding UTF8

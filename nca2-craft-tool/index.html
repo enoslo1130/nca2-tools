@@ -1,0 +1,496 @@
+﻿<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AION2 鋆?鋆賭?閮???| 蝟餃?憟??蔥璅∪?</title>
+  <meta name="description" content="AION2 瘞豢?蝝?? 鋆?鋆賭??閮?????靘鋆?蝟餃???嚗?游?隞嗉?????雿菔?蝞?>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>??</text></svg>">
+  <style>
+
+.cart-item { display: flex; align-items: center; justify-content: space-between; background: rgba(12,18,34,0.6); border: 1px solid var(--border-dim); padding: 10px; border-radius: 8px; margin-bottom: 8px; transition: all 0.3s; }
+.cart-item:hover { border-color: rgba(100,160,255,0.4); background: rgba(16,24,46,0.8); }
+.cart-item-info { display: flex; align-items: center; gap: 12px; }
+.cart-qty-ctrl { display: flex; align-items: center; gap: 6px; }
+.qty-btn { background: rgba(30,40,70,0.8); border:none; color:#fff; width:28px; height:28px; border-radius:4px; cursor:pointer; font-weight:bold; }
+.qty-btn:hover { background: var(--accent-blue); }
+.remove-btn { color: var(--accent-red); cursor:pointer; background:none; border:none; font-size:18px; margin-left: 8px; }
+.remove-btn:hover { transform: scale(1.1); }
+.cart-section h3 { margin-bottom: 16px; font-size: 16px; color: var(--text-secondary); display:flex; align-items:center; gap:8px;}
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">A2</div>
+        <div>
+          <div class="logo-text">AION2 CRAFT</div>
+          <div class="logo-subtitle">鋆?鋆賭??閮???(蝟餃??蔭?游???</div>
+        </div>
+      </div>
+      <div class="header-info">
+        <span>? 靘蝟餃??豢?甇血嚗蒂銝甈∟岫蝞?隞嗅?雿菜??鞎?/span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="content-grid">
+      <aside class="sidebar">
+        <div class="panel">
+          <div class="panel-header">
+            <span class="icon">??/span>
+            <h2>鋆?蝟餃??詨 (暺????蔭)</h2>
+          </div>
+          <!-- ?梯??∠??憿??寧蝝硃撅蝟餃? -->
+          <div class="equipment-list" id="equipment-list"></div>
+        </div>
+      </aside>
+
+      <section class="main-content">
+        <!-- 蝟餃??蔭?Ｘ -->
+        <div class="panel" style="padding: 24px; margin-bottom: 24px;" id="series-detail-panel">
+          <div class="empty-state"><p>隢?撌血?鋆?蝟餃?</p></div>
+        </div>
+
+        <!-- 鞈潛頠???-->
+        <div class="panel" style="padding: 24px; position: relative; margin-bottom: 24px;">
+          <div class="cart-section">
+            <h3>?? ?刻??ˊ雿?鞈潛頠???/h3>
+            <div id="cart-container"></div>
+          </div>
+        </div>
+
+        <!-- ?蔥??皜 -->
+        <div class="panel" style="padding: 24px;">
+          <div class="equip-materials">
+            <h3 style="font-size: 16px; margin-bottom: 16px; color: var(--text-secondary);">?? ?瘙??蜇閬?(????桀歇?蔥?蜇)</h3>
+            <div class="materials-grid" id="materials-grid"></div>
+          </div>
+        </div>
+
+        <!-- 蝮賣???-->
+        <div class="cost-summary" style="margin-top: 24px;">
+          <div class="cost-label">
+            <h3>? 蝮賢?雿菜??祈岫蝞?/h3>
+            <p id="total-info">隢?摰??函?鋆?鋆賭?皜</p>
+          </div>
+          <div class="cost-total">
+            <span class="cost-amount" id="total-amount">0</span>
+            <span class="cost-currency">?箇?</span>
+          </div>
+          <div class="cost-actions">
+            <button class="btn btn-primary" onclick="exportReport()" data-tooltip="銴ˊ??梯”?啣鞎潛倏">?? ?臬?梯”</button>
+            <button class="btn btn-secondary" onclick="clearAllPrices()" data-tooltip="皜??歇頛詨???>??儭?皜?桀</button>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <script>
+// ---------- 鞈?頛? ----------
+
+
+
+
+// ---------- ?摩?瑁?? ----------
+/**
+ * ?啁? AION2 鋆?鋆賭??閮???(蝟餃??頃?抵?璅∪?)
+ */
+
+const SERIES_NAMES = ["????, "憭???, "???樴?", "???樴?", "???貊?", "憭??貊?", "???樴??, "???樴??, "?批噸??, "摰????", "?瑟摰??", "鋡思噩???舫???];
+let ALL_SERIES = {};
+
+let cart = {}; // { "鋆??迂": ?賊? }
+let currentSeries = null;
+const STORAGE_PREFIX = 'aion2_price_';
+
+function init() {
+  processSeries();
+  renderEquipmentList();
+  renderSeriesDetail();
+  renderCart();
+}
+
+function processSeries() {
+  SERIES_NAMES.forEach(s => ALL_SERIES[s] = { weapons: {}, guarders: {}, grade: 'Normal' });
+  
+  Object.entries(RECIPES).forEach(([name, recipe]) => {
+    let matchedSeries = null;
+    let maxLen = 0;
+    SERIES_NAMES.forEach(s => {
+      if (name.startsWith(s) && s.length > maxLen) {
+        matchedSeries = s;
+        maxLen = s.length;
+      }
+    });
+    
+    if (matchedSeries) {
+      ALL_SERIES[matchedSeries].grade = recipe.grade;
+      if (recipe.category === 'Guarder') {
+        ALL_SERIES[matchedSeries].guarders['Guarder'] = name;
+      } else {
+        ALL_SERIES[matchedSeries].weapons[recipe.category] = name;
+      }
+    }
+  });
+  
+  // 蝘駁瘝?鋆??頂??  Object.keys(ALL_SERIES).forEach(s => {
+    if(Object.keys(ALL_SERIES[s].weapons).length === 0 && Object.keys(ALL_SERIES[s].guarders).length === 0) {
+      delete ALL_SERIES[s];
+    }
+  });
+}
+
+function renderEquipmentList() {
+  const container = document.getElementById('equipment-list');
+  let html = '';
+  
+  Object.entries(ALL_SERIES).forEach(([seriesName, data]) => {
+    const isSelected = currentSeries === seriesName;
+    const grade = data.grade.toLowerCase();
+    
+    html += `
+      <div class="equipment-item ${isSelected ? 'selected' : ''}" onclick="selectSeries('${seriesName}')">
+        <div class="item-icon grade-${grade}">
+          <div class="default-item-icon" style="font-size: 20px;">?儭?/div>
+        </div>
+        <div>
+          <div class="item-name ${grade}">${seriesName} 蝟餃?</div>
+          <div class="item-category">${Object.keys(data.weapons).length} 蝔株璆剜郎?券??/div>
+        </div>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html || '<div class="empty-state"><p>?∪?函?鋆?蝟餃?</p></div>';
+}
+
+function selectSeries(seriesName) {
+  currentSeries = seriesName;
+  document.querySelectorAll('.equipment-item').forEach(el => el.classList.remove('selected'));
+  renderEquipmentList();
+  renderSeriesDetail();
+}
+
+function renderSeriesDetail() {
+  const panel = document.getElementById('series-detail-panel');
+  if (!currentSeries) {
+    panel.innerHTML = `<div class="empty-state"><p>隢?撌血?鋆?蝟餃?靘?憪?蝵?/p></div>`;
+    return;
+  }
+  
+  const data = ALL_SERIES[currentSeries];
+  const grade = data.grade.toLowerCase();
+  
+  let weaponOptions = '';
+  Object.entries(data.weapons).forEach(([category, itemName]) => {
+    weaponOptions += `<option value="${itemName}">${category === 'null' ? '甇血' : (WEAPON_SUBTYPES[category] || category)} - ${itemName}</option>`;
+  });
+  
+  let guarderHtml = '';
+  if (data.guarders['Guarder']) {
+    const gName = data.guarders['Guarder'];
+    guarderHtml = `
+      <div style="margin-top: 15px; display:flex; align-items:center; gap: 8px;">
+        <input type="checkbox" id="add-guarder" value="${gName}" style="width: 18px; height: 18px;">
+        <label for="add-guarder" style="color:var(--text-primary); cursor:pointer;">???甇斤頂???刻???/ ? (${gName})</label>
+      </div>
+    `;
+  }
+  
+  panel.innerHTML = `
+    <div class="fade-in">
+      <h3 style="margin-bottom: 20px; font-size: 18px;" class="${grade}">
+        ???蔭??{currentSeries} 蝟餃?????      </h3>
+      
+      <div style="background: rgba(0,0,0,0.25); padding: 20px; border-radius: 8px; border: 1px solid var(--border-dim);">
+        <label style="display:block; margin-bottom:10px; color:var(--text-secondary); font-weight: bold;">?? ?豢??函??瑟平甇血嚗?/label>
+        <select id="series-weapon-select" class="price-input" style="width:100%; max-width: 500px; padding: 10px; font-size: 14px; cursor: pointer;">
+          ${weaponOptions}
+        </select>
+        
+        ${guarderHtml}
+        
+        <div style="margin-top: 15px; display: flex; align-items: center; gap: 20px;">
+          <label style="color:var(--text-dim); display:flex; align-items:center; gap:6px; opacity:0.6;">
+             <input type="checkbox" disabled> ?脣?蔭 (?貊??)
+          </label>
+          <label style="color:var(--text-dim); display:flex; align-items:center; gap:6px; opacity:0.6;">
+             <input type="checkbox" disabled> 憌曉??蔭 (?貊??)
+          </label>
+        </div>
+        
+        <div style="margin-top: 24px;">
+          <button class="btn btn-primary" onclick="addSeriesToCart()" style="font-size: 15px; padding: 12px 24px;">
+            ??撠摰????亥ˊ雿???          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function addSeriesToCart() {
+  const weaponSelect = document.getElementById('series-weapon-select');
+  let addedCount = 0;
+  if (weaponSelect && weaponSelect.value) {
+    _addToCart(weaponSelect.value);
+    addedCount++;
+  }
+  
+  const guarderCheck = document.getElementById('add-guarder');
+  if (guarderCheck && guarderCheck.checked) {
+    _addToCart(guarderCheck.value);
+    addedCount++;
+  }
+  
+  if (addedCount > 0) {
+    showToast(`??? ${addedCount} 隞嗉??皜嚗);
+  }
+}
+
+function _addToCart(name) {
+  if (cart[name]) cart[name]++;
+  else cart[name] = 1;
+  renderCart();
+}
+
+function updateCartQty(name, delta) {
+  if (!cart[name]) return;
+  cart[name] += delta;
+  if (cart[name] <= 0) {
+    delete cart[name];
+  }
+  renderCart();
+}
+
+function removeFromCart(name) {
+  delete cart[name];
+  renderCart();
+}
+
+function renderCart() {
+  const container = document.getElementById('cart-container');
+  const emptyState = `<div class="empty-state" style="padding: 30px;"><div class="icon" style="font-size: 40px; margin-bottom: 10px;">??</div><p>撠?豢?隞颱?鋆?</p></div>`;
+  
+  if (Object.keys(cart).length === 0) {
+    container.innerHTML = emptyState;
+    document.getElementById('materials-grid').innerHTML = '';
+    calculateTotal();
+    return;
+  }
+  
+  let html = '';
+  let aggMats = {};
+  
+  for (let [name, qty] of Object.entries(cart)) {
+    const item = ITEMS[name];
+    const recipe = RECIPES[name];
+    const imageSrc = item && item.image ? item.image : null;
+    const grade = recipe ? recipe.grade.toLowerCase() : 'normal';
+    
+    html += `
+      <div class="cart-item fade-in">
+        <div class="cart-item-info">
+          <div class="material-icon grade-${grade}" style="width: 44px; height: 44px;">
+            ${imageSrc ? `<img src="${imageSrc}">` : `<div class="default-item-icon">??/div>`}
+          </div>
+          <div>
+             <div class="material-name ${grade}" style="font-size: 15px;">${escapeHtml(name)}</div>
+             <div style="font-size: 11px; color: var(--text-dim); margin-top: 2px;">?桐辣?瘙???x ${qty}</div>
+          </div>
+        </div>
+        <div class="cart-qty-ctrl">
+          <button class="qty-btn" onclick="updateCartQty('${escapeHtml(name)}', -1)">-</button>
+          <span style="font-weight: bold; width: 30px; text-align: center; font-size: 16px;">${qty}</span>
+          <button class="qty-btn" onclick="updateCartQty('${escapeHtml(name)}', 1)">+</button>
+          <button class="remove-btn" onclick="removeFromCart('${escapeHtml(name)}')">??儭?/button>
+        </div>
+      </div>
+    `;
+    
+    // ?蔥??
+    if (recipe && recipe.materials) {
+      recipe.materials.forEach(mat => {
+        if (!aggMats[mat.name]) aggMats[mat.name] = 0;
+        aggMats[mat.name] += mat.qty * qty;
+      });
+    }
+  }
+  
+  container.innerHTML = html;
+  renderMaterials(aggMats);
+}
+
+function renderMaterials(aggMats) {
+  const grid = document.getElementById('materials-grid');
+  let html = '';
+  let idx = 0;
+  
+  for (let [matName, totalQty] of Object.entries(aggMats)) {
+    const item = ITEMS[matName];
+    const imageSrc = item && item.image ? item.image : null;
+    const grade = item ? item.grade.toLowerCase() : 'normal';
+    const savedPrice = loadPrice(matName);
+    
+    html += `
+      <div class="material-row fade-in" style="animation-delay:${idx * 0.05}s">
+        <div class="material-icon grade-${grade}">
+          ${imageSrc ? `<img src="${imageSrc}" loading="lazy">` : `<div class="default-item-icon">?</div>`}
+        </div>
+        <div class="material-info">
+          <div class="material-name ${grade}" title="${escapeHtml(matName)}">${escapeHtml(matName)}</div>
+        </div>
+        <div class="material-qty">
+          x <strong>${totalQty.toLocaleString()}</strong>
+        </div>
+        <div class="price-input-wrapper">
+          <span class="price-currency">?</span>
+          <input type="text" class="price-input" placeholder="頛詨?桀" 
+                 data-material="${escapeHtml(matName)}" data-qty="${totalQty}" 
+                 value="${savedPrice || ''}" oninput="onPriceInput(this)" id="price-${idx}">
+        </div>
+        <div class="material-subtotal ${savedPrice ? 'has-value' : ''}" id="subtotal-${idx}">
+          ${savedPrice ? formatKinah(savedPrice * totalQty) : '??}
+        </div>
+      </div>
+    `;
+    idx++;
+  }
+  
+  grid.innerHTML = html;
+  calculateTotal();
+}
+
+function onPriceInput(input) {
+  const raw = input.value.replace(/[^0-9]/g, '');
+  const price = parseInt(raw) || 0;
+  const qty = parseInt(input.dataset.qty) || 0;
+  const matName = input.dataset.material;
+  const idx = input.id.replace('price-', '');
+  const subtotalEl = document.getElementById(`subtotal-${idx}`);
+  
+  if (raw) input.value = parseInt(raw).toLocaleString();
+  
+  if (price > 0) {
+    subtotalEl.textContent = formatKinah(price * qty);
+    subtotalEl.classList.add('has-value');
+    savePrice(matName, price);
+  } else {
+    subtotalEl.textContent = '??;
+    subtotalEl.classList.remove('has-value');
+    removePrice(matName);
+  }
+  
+  calculateTotal();
+}
+
+function calculateTotal() {
+  let total = 0;
+  let filledCount = 0;
+  const inputs = document.querySelectorAll('.price-input');
+  
+  inputs.forEach(input => {
+    const raw = input.value.replace(/[^0-9]/g, '');
+    const price = parseInt(raw) || 0;
+    const qty = parseInt(input.dataset.qty) || 0;
+    if (price > 0) {
+      total += price * qty;
+      filledCount++;
+    }
+  });
+  
+  const amountEl = document.getElementById('total-amount');
+  const infoEl = document.getElementById('total-info');
+  
+  if (amountEl) {
+    amountEl.textContent = total > 0 ? total.toLocaleString() : '0';
+  }
+  if (infoEl) {
+    if (inputs.length === 0) {
+      infoEl.textContent = '頛撠???敺?質?蝞蜇憿?;
+    } else {
+      infoEl.textContent = `頛詨??撣隞亥岫蝞蜇??(${filledCount}/${inputs.length})`;
+    }
+  }
+}
+
+function clearAllPrices() {
+  if (!confirm('蝣箏?閬??斗??歇頛詨????澆?嚗?)) return;
+  document.querySelectorAll('.price-input').forEach(input => {
+    input.value = '';
+    removePrice(input.dataset.material);
+  });
+  document.querySelectorAll('.material-subtotal').forEach(el => {
+    el.textContent = '??;
+    el.classList.remove('has-value');
+  });
+  calculateTotal();
+}
+
+function exportReport() {
+  if (Object.keys(cart).length === 0) return showToast('鞈潛頠??桃?蝛?);
+  
+  let text = `????AION2 蝟餃?鋆??隡啁??梯” ???n???ˊ雿??柴n`;
+  for(let [name, qty] of Object.entries(cart)) {
+    text += `- ${name} (?貊: ${qty})\n`;
+  }
+  text += `??????????????????\n??瘙蜇?????敦?n`;
+  
+  let total = 0;
+  document.querySelectorAll('.price-input').forEach(input => {
+    const matName = input.dataset.material;
+    const qty = input.dataset.qty;
+    const raw = input.value.replace(/[^0-9]/g, '');
+    const price = parseInt(raw) || 0;
+    const subtotal = price * qty;
+    
+    total += subtotal;
+    text += `${matName} x${qty}`;
+    if (price > 0) {
+      text += ` | ?桀: ${price.toLocaleString()} | ?身: ${subtotal.toLocaleString()}\n`;
+    } else {
+      text += ` | ??敺?\n`;
+    }
+  });
+  
+  text += `??????????????????\n`;
+  text += `? 蝮質?隡唳??祉??綽?${total.toLocaleString()} ?箇?\n`;
+  text += `???????????????????n`;
+  
+  navigator.clipboard.writeText(text)
+    .then(() => showToast('?梯”?批捆撌脰?鋆賢?函??芾票蝪選?'))
+    .catch(() => showToast('?望?嚗?鋆賜?隤歹?隢???鋆?));
+}
+
+// Utils
+function formatKinah(amount) {
+  if (amount >= 100000000) return (amount / 100000000).toFixed(1) + '??;
+  if (amount >= 10000) return (amount / 10000).toFixed(1) + '??;
+  return amount.toLocaleString();
+}
+function escapeHtml(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+function savePrice(name, price) { try { localStorage.setItem(STORAGE_PREFIX + name, price.toString()); } catch(e){} }
+function loadPrice(name) { try { const v = localStorage.getItem(STORAGE_PREFIX + name); return v ? parseInt(v) : null; } catch(e){ return null; } }
+function removePrice(name) { try { localStorage.removeItem(STORAGE_PREFIX + name); } catch(e){} }
+function showToast(msg) {
+  let toast = document.getElementById('toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast';
+    toast.style.cssText = `position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(20px);padding:12px 24px;background:rgba(0,212,255,0.15);color:#00d4ff;border:1px solid rgba(0,212,255,0.3);border-radius:12px;font-size:14px;pointer-events:none;opacity:0;transition:all 0.3s;z-index:9999;backdrop-filter:blur(4px);`;
+    document.body.appendChild(toast);
+  }
+  toast.textContent = msg;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transform = 'translateX(-50%) translateY(20px)'; }, 2000);
+}
+
+document.addEventListener('DOMContentLoaded', init);
+
+  </script>
+</body>
+</html>
