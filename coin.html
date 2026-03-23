@@ -183,7 +183,7 @@
         </div>
         <div class="form-group">
             <label>花費金額 (台幣)</label>
-            <input type="number" id="gemPrice" value="1700" step="10">
+            <input type="number" id="gemPrice" value="1900" step="10">
         </div>
     </div>
 
@@ -259,7 +259,8 @@
         const targetBudget = parseFloat(document.getElementById('targetBudget').value) || 6000;
         
         const gemAmount = parseFloat(document.getElementById('gemAmount').value) || 4000;
-        const gemPrice = parseFloat(document.getElementById('gemPrice').value) || 1700;
+        // 這裡的防呆預設值也同步改為 1900
+        const gemPrice = parseFloat(document.getElementById('gemPrice').value) || 1900;
         
         const box10mGems = parseFloat(document.getElementById('box10mGems').value) || 368;
         const box2mGems = parseFloat(document.getElementById('box2mGems').value) || 75;
@@ -311,7 +312,6 @@
             const kinahInWan = Math.floor(res.kinah / 10000).toLocaleString(); 
             
             if (index === bestIndex) {
-                // 將最佳選擇的 Highlight 改為綠色，比較符合正向收益的感覺
                 el.className = 'result-item highlight';
                 el.innerHTML = `<div class="highlight-title">🏆 [最划算] ${res.name}</div>
                                 預計實拿: <span class="number">${formattedKinah}</span> 基納<br>
