@@ -16,12 +16,12 @@ python -m pip install -r tools/requirements.txt
 ## 使用
 
 ```bash
-python tools/fetch_ncsoft_item_images.py --url "https://tw.ncsoft.com/aion2/info/item?class=&page=&grade=Unique&category1=Equip_Weapon&category2=Sword" --output-dir "images/ncsoft"
+python tools/fetch_ncsoft_item_images.py --url "https://tw.ncsoft.com/aion2/info/item?class=&page=1&grade=Unique&category1=Equip_Weapon&category2=Staff" --output-dir "images/ncsoft"
 ```
 
 ### 批次抓取
 
-如果你要一次抓多個分類頁，可以用 JSON 批次檔：
+如果你要一次抓多個分類頁，可以用 JSON 批次檔。每個 URL 只要指定一個分類與品階，腳本會依照清單回應中的 `pagination.total` 自動把後續頁數一起抓完，不需要手動寫每一頁：
 
 ```bash
 python tools/fetch_ncsoft_item_images.py --batch-file "tools/batch.json" --asset-root "images"
@@ -34,6 +34,6 @@ python tools/fetch_ncsoft_item_images.py --batch-file "tools/batch.json" --asset
 ## 備註
 
 - `--size` 預設是 30，和網站清單 API 的每頁數量一致
-- `--limit-pages` 可以先試抓前幾頁，避免一次跑太多
+- `--limit-pages` 可以先試抓前幾頁，避免一次跑太多；正式收圖時建議維持 0，讓腳本自動抓完整分頁
 - 檔名會依照中文內容轉成羅馬拼音 CamelCase，方便後續放進 craft tool
 - `--asset-root` 指向 `nca2-craft-tool/images` 時，武器會進入 `weapons/`，防具會進入 `armor/`，飾品會進入 `accessories/`，其餘預設進 `materials/`

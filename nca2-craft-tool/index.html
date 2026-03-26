@@ -532,16 +532,18 @@ body::before {
 
 .equipment-option-meta {
   min-width: 0;
+  flex: 1;
 }
 
 .equipment-option-name {
-  font-size: 14px;
-  font-weight: 700;
-  line-height: 1.35;
-  overflow: visible;
-  text-overflow: clip;
-  white-space: normal;
-  word-break: break-word;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  word-break: normal;
+  letter-spacing: -0.1px;
 }
 
 .equipment-option-name.epic { color: var(--grade-epic); }
@@ -556,17 +558,17 @@ body::before {
 .equipment-option-controls {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .equipment-option-btn {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border: 1px solid var(--border-dim);
   border-radius: 10px;
   background: rgba(30, 40, 70, 0.7);
   color: var(--text-primary);
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: var(--transition);
@@ -1048,7 +1050,7 @@ body::before {
         <div class="logo-icon">A2</div>
         <div>
           <div class="logo-text">AION2 CRAFT</div>
-          <div class="logo-subtitle">裝備製作成本計算器 (系列配置整合版)</div>
+          <div class="logo-subtitle">裝備製作成本計算器</div>
         </div>
       </div>
       <div class="header-info">
@@ -1183,8 +1185,8 @@ const ITEMS = {
   "被侵蝕的支配者鎖鏈": { image: "images/weapons/Guarder/ErodedDominatorGuarder.png", grade: "Epic", type: "weapon", subtype: "Guarder" },
 
   // ========== 製作材料 ==========
-  "達人閃耀的菩提弓": { image: null, grade: "Epic", type: "material" },
-  "達人閃耀的菩提法杖": { image: null, grade: "Epic", type: "material" },
+  "達人閃耀的菩提弓": { image: "images/weapons/Bow/Unique/DaRenShanYaoDePuTiGong_110430014.png", grade: "Unique", type: "material" },
+  "達人閃耀的菩提法杖": { image: "images/weapons/Staff/Unique/DaRenShanYaoDePuTiFaZhang.png", grade: "Unique", type: "material" },
   "達人閃耀的奧里哈康頭盔": { image: "images/materials/DaRenShanYaoDeAoLiHaKangTouKui.png", grade: "Unique", type: "material" },
   "達人閃耀的奧里哈康胸甲": { image: "images/materials/DaRenShanYaoDeAoLiHaKangXiongJia.png", grade: "Unique", type: "material" },
   "達人閃耀的奧里哈康腿甲": { image: "images/materials/DaRenShanYaoDeAoLiHaKangTuiJia.png", grade: "Unique", type: "material" },
@@ -1198,7 +1200,7 @@ const ITEMS = {
   "提煉的強固龍族角":       { image: "images/materials/RefinedSolidBalaurHorn.png", grade: "Unique", type: "material" },
   "提煉的強結龍族角":       { image: "images/materials/RefinedFirmBalaurHorn.png", grade: "Unique", type: "material" },
   "鞣製的強固龍族皮革":     { image: "images/materials/TannedSolidBalaurLeather.png", grade: "Unique", type: "material" },
-  "鞣製的強固龍族鱗片":     { image: null, grade: "Unique", type: "material" },
+  "鞣製的強固龍族鱗片":     { image: "images/materials/SolidBalaurScale.png", grade: "Unique", type: "material" },
   "鞣製的強結龍族皮革":     { image: "images/materials/TannedFirmBalaurLeather.png", grade: "Unique", type: "material" },
   "強化的強固龍族鱗片":     { image: "images/materials/EnhancedSolidBalaurScale.png", grade: "Unique", type: "material" },
   "強化的強結龍族鱗片":     { image: "images/materials/EnhancedFirmBalaurScale.png", grade: "Unique", type: "material" },
@@ -1230,15 +1232,15 @@ const ITEMS = {
   "強結的龍族鱗片":         { image: "images/materials/FirmBalaurScale.png", grade: "Unique", type: "material" },
 
   // 暫無圖片的材料（使用預設）
-  "達人閃耀的奧里哈康巨劍": { image: null, grade: "Unique", type: "material" },
-  "達人閃耀的奧里哈康長劍": { image: null, grade: "Unique", type: "material" },
-  "達人閃耀的奧里哈康短劍": { image: null, grade: "Unique", type: "material" },
-  "達人閃耀的奧里哈康弓":   { image: null, grade: "Unique", type: "material" },
-  "達人閃耀的奧里哈康魔法書": { image: null, grade: "Unique", type: "material" },
-  "達人閃耀的奧里哈康法珠": { image: null, grade: "Unique", type: "material" },
-  "達人閃耀的奧里哈康釘錘": { image: null, grade: "Unique", type: "material" },
-  "達人閃耀的奧里哈康法杖": { image: null, grade: "Unique", type: "material" },
-  "達人閃耀的奧里哈康臂甲": { image: null, grade: "Unique", type: "material" },
+  "達人閃耀的奧里哈康巨劍": { image: "images/weapons/Greatsword/Unique/DaRenShanYaoDeAoLiHaKangJuJian_5.png", grade: "Unique", type: "material" },
+  "達人閃耀的奧里哈康長劍": { image: "images/weapons/Sword/Unique/DaRenShanYaoDeAoLiHaKangChangJian.png", grade: "Unique", type: "material" },
+  "達人閃耀的奧里哈康短劍": { image: "images/weapons/Dagger/Unique/DaRenShanYaoDeAoLiHaKangDuanJian_5.png", grade: "Unique", type: "material" },
+  "達人閃耀的奧里哈康弓":   { image: "images/weapons/Bow/Unique/DaRenShanYaoDePuTiGong_110430014.png", grade: "Unique", type: "material" },
+  "達人閃耀的奧里哈康魔法書": { image: "images/weapons/Magicbook/Unique/DaRenShanYaoDeZhenShiMoFaShu_5.png", grade: "Unique", type: "material" },
+  "達人閃耀的奧里哈康法珠": { image: "images/weapons/Orb/Unique/DaRenShanYaoDeZhenShiFaZhu_5.png", grade: "Unique", type: "material" },
+  "達人閃耀的奧里哈康釘錘": { image: "images/weapons/Mace/Unique/DaRenShanYaoDeAoLiHaKangDingChui_5.png", grade: "Unique", type: "material" },
+  "達人閃耀的奧里哈康法杖": { image: "images/weapons/Staff/Unique/DaRenShanYaoDeShiJieShuFaZhang.png", grade: "Unique", type: "material" },
+  "達人閃耀的奧里哈康臂甲": { image: "images/weapons/Guarder/Unique/DaRenShanYaoDeAoLiHaKangBiJia_5.png", grade: "Unique", type: "material" },
   "燦爛的奧里哈康礦石":     { image: null, grade: "Unique", type: "material" },
   "燦爛的奧德":       { image: null, grade: "Unique", type: "material" },
 };

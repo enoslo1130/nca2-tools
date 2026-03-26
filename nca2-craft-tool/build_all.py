@@ -117,7 +117,7 @@ html = f"""<!DOCTYPE html>
         <div class="logo-icon">A2</div>
         <div>
           <div class="logo-text">AION2 CRAFT</div>
-          <div class="logo-subtitle">裝備製作成本計算器 (系列配置整合版)</div>
+          <div class="logo-subtitle">裝備製作成本計算器</div>
         </div>
       </div>
       <div class="header-info">
